@@ -60,7 +60,7 @@ class MeanSquaredError(Error):
 
     def calculateError(self, target, output):
         # MSE = 1/n*sum (i=1 to n) of (target_i - output_i)^2)
-        pass
+        return 1.0/len(output) * np.sum((target - output) ** 2)
 
 
 class SumSquaredError(Error):
@@ -85,8 +85,11 @@ class BinaryCrossEntropyError(Error):
         self.errorString = 'bce'
 
     def calculateError(self, target, output):
-        pass
+        # sum over all m examples in target/output with n outputs each (mxn matrix)
+        # for one example j: -( target[j,0] * log(output[j,0]) + target[j,1]*log(output[j,1]) + ... until neuron n
+        # then also sum over all examples
 
+        return -np.sum(target*np.log(output) + (1.0-np.array(target))*np.log((1.0-np.array(output))))
 
 class CrossEntropyError(Error):
     """

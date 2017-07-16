@@ -4,7 +4,7 @@
 from data.mnist_seven import MNISTSeven
 from model.stupid_recognizer import StupidRecognizer
 from model.perceptron import Perceptron
-from model.logistic_regression import LogisticRegression
+from model.logistic_regression_layered import LogisticRegression
 from report.evaluator import Evaluator
 
 

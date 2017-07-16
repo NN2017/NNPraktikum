@@ -4,10 +4,10 @@ import time
 import numpy as np
 
 from util.activation_functions import Activation
-from model.layer import Layer
+#from model.layer import Layer
 
 
-class LogisticLayer(Layer):
+class LogisticLayer:#(Layer):
     """
     A layer of perceptrons acting as the output layer
 
@@ -41,21 +41,24 @@ class LogisticLayer(Layer):
     """
 
     def __init__(self, nIn, nOut, weights=None,
-                 activation='softmax', isClassifierLayer=True):
+                 activation='softmax', isClassifierLayer=True, learningRate=0.05):
 
         # Get activation function from string
         # Notice the functional programming paradigms of Python + Numpy
         self.activationString = activation
         self.activation = Activation.getActivation(self.activationString)
+        self.activation_derivative = Activation.getDerivative(self.activationString)
 
         self.nIn = nIn
         self.nOut = nOut
 
         # Adding bias
         self.input = np.ndarray((nIn+1, 1))
-        self.input[0] = 1
+        #self.input[0] = 1
         self.output = np.ndarray((nOut, 1))
         self.delta = np.zeros((nOut, 1))
+
+        self.learningRate = learningRate
 
         # You can have better initialization here
         if weights is None:
@@ -78,13 +81,21 @@ class LogisticLayer(Layer):
         ----------
         input : ndarray
             a numpy array (1,nIn + 1) containing the input of the layer
+            input[0] is always 1 and represents the bias.
 
         Returns
         -------
         ndarray :
             a numpy array (1,nOut) containing the output of the layer
+
         """
-        pass
+
+        self.input = input
+
+        # (nOut,1)                      (nOut, nIn+1)  (1,nIn+1)
+        self.before_activation = np.matmul(self.weights, input)
+        self.output = self.activation(self.before_activation)
+        return self.output
 
     def computeDerivative(self, nextDerivatives, nextWeights):
         """
@@ -102,10 +113,15 @@ class LogisticLayer(Layer):
         ndarray :
             a numpy array containing the partial derivatives on this layer
         """
-        pass
+        self.delta = self.activation_derivative(self.before_activation) * \
+            nextDerivatives.dot(nextWeights)
+
 
     def updateWeights(self):
         """
         Update the weights of the layer
+        weights matrix has shape (1,28^2), only one output but 28x28 (flattened) input
         """
-        pass
+        for i in range(self.nOut):  # loop over all neurons (here only one)
+            for j in range(self.nIn+1): # loop over the input connections to each neuron (each also has a bias)
+                self.weights[i,j] += self.delta[i] * self.input[j] * self.learningRate
