@@ -93,8 +93,8 @@ class LogisticRegression(Classifier):
                 self.outLayer.computeDerivative(derivative_last_layer_mse, np.array([1]))
                 self.outLayer.updateWeights()
 
-            totalError_bce = abs(totalError_bce)
-            #totalError_mse = abs(totalError_mse)
+            #totalError_bce = abs(totalError_bce)
+            totalError_mse = abs(totalError_mse)
 
             iteration += 1
 
