@@ -19,8 +19,8 @@ class Activation:
 
     @staticmethod
     def sigmoid(netOutput):
-        # Here you have to code the sigmoid function
-        pass
+        # use e^x from numpy to avoid overflow
+        return 1/(1+exp(-1.0*netOutput))
 
     @staticmethod
     def sigmoidPrime(netOutput):
@@ -30,8 +30,10 @@ class Activation:
 
     @staticmethod
     def tanh(netOutput):
-        # Here you have to code the tanh function
-        pass
+        # return 2*Activation.sigmoid(2*netOutput)-1
+        ex = exp(1.0*netOutput)
+        exn = exp(-1.0*netOutput)
+        return divide(ex-exn, ex+exn)  # element-wise division
 
     @staticmethod
     def tanhPrime(netOutput):
